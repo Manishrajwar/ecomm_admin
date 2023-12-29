@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 
-function ProductDashboard({token}){
+function ProductDashboard({token , updateCategoryId , setUpdateCategoryId , updateProductId ,setUpdateProductId}){
 
     const [totalUsers , setTotalUsers] = useState("");
+
+    
 
     const fetchAllUsers = async()=>{
         try{
@@ -25,8 +27,19 @@ function ProductDashboard({token}){
           }  
     }
 
+
+
     useEffect(()=>{
         fetchAllUsers();
+
+        if(updateCategoryId !== null){
+          sessionStorage.removeItem("ecommAdmin_CategoryId");
+          setUpdateCategoryId(null);
+        }
+        if(updateProductId !== null){
+          sessionStorage.removeItem("ecommAdmin_productId");
+          setUpdateProductId(null);
+        }
     },[])
     return (
         <div className="w-full flex flex-col gap-10  ">

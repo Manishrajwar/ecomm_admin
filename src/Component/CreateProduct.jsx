@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function CreateProduct({setSelectedItem , token}){
+function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCategoryId , updateProductId ,setUpdateProductId}){
 
  const [allCategory , setAllCategory]  = useState([]);
     
@@ -64,12 +64,60 @@ function CreateProduct({setSelectedItem , token}){
     useEffect(()=>{
     
         fetchAllCategory();
+
+        if(sessionStorage.getItem("ecommAdmin_productId")){
+          setUpdateProductId(sessionStorage.getItem("ecommAdmin_productId"));
+        }
+
+        if(updateCategoryId !== null){
+          sessionStorage.removeItem("ecommAdmin_CategoryId");
+          setUpdateCategoryId(null);
+        }
+
  },[])
 
- // Handle Form Submission
- const submitHandler =async (e) =>{
+ const fetchProductDetailById = async()=>{
+  try{
+    try{
+      const response = await fetch(`http://localhost:4000/api/v1/getProductById/${updateProductId}` , {
+        method:"GET",
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const formattedResponse = await response.json();
+  
+      console.log("productFetch" , formattedResponse);
+  
+      if(formattedResponse.success){
+        setFormData((prev) => ({
+          ...prev, 
+          title: formattedResponse?.data?.title, 
+          thumbnail: formattedResponse?.data?.thumbnail,
+          description: formattedResponse?.data?.description , 
+          price: formattedResponse?.data?.price , 
+          category: formattedResponse?.data?.category
+        }));
+      }
+     
+    }catch (error) {
+      console.log(`error in fetch api `, error);
+    }  
 
-    e.preventDefault();
+  } catch(error){
+
+  }
+ }
+
+ useEffect(()=>{
+  if(updateProductId){
+   fetchProductDetailById();
+  }
+ },[updateProductId])
+
+ // Handle Form Submission
+ const submitHandler =async () =>{
 
     try {
 
@@ -106,13 +154,55 @@ function CreateProduct({setSelectedItem , token}){
 
   }
 
+
+  const updateProductHandler = async()=>{
+   
+    try {
+
+      const formToSendData = new FormData();
+      formToSendData.append("thumbnail" , formData.thumbnail);
+      formToSendData.append("title" , formData.title);
+      formToSendData.append("price" , formData.price);
+      formToSendData.append("description" , formData.description);
+      formToSendData.append("category" , formData.category);
+
+
+      const response = await fetch( `http://localhost:4000/api/v1/updateProduct/${updateProductId}`, {
+        method: "PUT",
+        
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        // the body will send like this to backend
+        body: formToSendData,
+      });
+  
+      const formattedResponse = await response.json();
+      console.log("updateProductData" , formattedResponse);
+
+
+      if(formattedResponse.success){
+        alert("successfuly updated the product");
+                 setSelectedItem("products");
+      }
+    } catch (error) {
+      console.log(`error in fetch api `, error);
+      alert(error);
+    }
+  
+  }
+
     return (
         <div className="w-full flex flex-col gap-10  ">
 
         <h2 className="mx-auto text-white text-[34px] font-[600]">Product</h2>
                         
         
-        <form onSubmit={submitHandler} class="max-w-sm mx-auto w-full ">
+        <form onSubmit={(e)=>{
+          e.preventDefault();
+
+          updateProductId !== null ? updateProductHandler(): submitHandler()
+        }} class="max-w-sm mx-auto w-full ">
         
           <div class="mb-5">
             <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title</label>
@@ -159,7 +249,7 @@ function CreateProduct({setSelectedItem , token}){
             
         </div>
         
-          <button type="submit" class="text-white mt-3 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+          <button type="submit" class="text-white mt-3 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">{updateProductId !== null ?"Update":"Submit"}</button>
         </form>
         
             </div>
