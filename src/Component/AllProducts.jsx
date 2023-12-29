@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function AllProducts({ token}){
+function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelectedItem ,updateProductId ,setUpdateProductId}){
 
     const [allProducts , setAllProducts] = useState([]); 
 
@@ -31,6 +31,15 @@ function AllProducts({ token}){
          useEffect(()=>{
 
         fetchAllProducts();
+        if(updateCategoryId !== null){
+          sessionStorage.removeItem("ecommAdmin_CategoryId");
+          setUpdateCategoryId(null);
+        }
+
+        if(updateProductId !== null){
+          sessionStorage.removeItem("ecommAdmin_productId");
+          setUpdateProductId(null);
+        }
          },[])
 
 
@@ -88,6 +97,12 @@ function AllProducts({ token}){
                 <th scope="col" class="px-6 py-3">
                     Thumbnail
                 </th>
+                <th scope="col" class="px-6 py-3">
+                    Update
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Delete
+                </th>
             </tr>
         </thead>
 
@@ -112,6 +127,15 @@ function AllProducts({ token}){
     <td class="px-6 py-4">
        <img src={product?.thumbnail} className="max-w-[100px] max-h-[50px]" alt="" />
     </td>
+    <td class="px-6 py-4">
+    <button onClick={()=>{
+      sessionStorage.setItem("ecommAdmin_productId" ,product?._id );
+      setSelectedItem("createProduct")
+
+    }} type="button"  className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Update</button>    </td>
+    <td class="px-6 py-4">
+    <button onClick={()=>deleteProductHandler(product?._id)} type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Delete</button> 
+       </td>
 </tr>
 
   ))
