@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 
-function AllUsers({  token}){
+function AllUsers({ token}){
 
     const [users , setUsers] = useState([]);
-
-    
 
     const fetchAllUsers = async()=>{
         try{
@@ -17,10 +15,10 @@ function AllUsers({  token}){
             });
             const formattedResponse = await response.json();
 
-            console.log(formattedResponse);
             if(formattedResponse.success){
               setUsers(formattedResponse.data);
             }
+
 
           }catch (error) {
             console.log(`error in fetch api `, error);

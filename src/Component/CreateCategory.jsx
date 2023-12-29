@@ -1,15 +1,12 @@
 import {  useState } from "react";
 
 function CreateCategory({setSelectedItem , token}){
-
-
-
+  
     const [formData , setFormData]  = useState({
         title:"",
         thumbnail:""
     })
 
-  
 
     // Function to handle file selection
    const handleImageChange = (event) => {

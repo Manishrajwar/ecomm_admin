@@ -64,33 +64,64 @@ function AllProducts({ token}){
     allProducts.length > 0 && 
     <div className="flex gap-5 flex-wrap justify-center">
 
+
+       
+
+<div class="relative overflow-x-auto">
+
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Product name
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Product Description
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Category
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Price
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Thumbnail
+                </th>
+            </tr>
+        </thead>
+
+
+
+        <tbody>
         {
-            allProducts.map((product , index)=>(
-                <div key={index} className="w-[300px]  bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg  block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:focus:border-blue-500">
-                     
-                     <img src={product?.thumbnail} className="w-[200px] h-[200px] mx-auto" alt="" />
+  allProducts.map((product , index)=>(
+    <tr key={index} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+       {product?.title}
+    </th>
+    <td class="px-6 py-4">
+        {product?.description}
+    </td>
+    <td class="px-6 py-4">
+        {product?.category?.title}
+    </td>
+    <td class="px-6 py-4">
+        {product?.price}
+    </td>
+    <td class="px-6 py-4">
+       <img src={product?.thumbnail} className="max-w-[100px] max-h-[50px]" alt="" />
+    </td>
+</tr>
 
-               <div className="py-2 px-3 flex flex-col gap-4">
+  ))
+ }
+           
+        </tbody>
 
-                     <p className="text-white font-[600] text-[22px]">{product?.title}</p>
-                     <p className="font-[500] text-[18px] text-white">Price: {product?.price}</p>
+    </table>
+</div>
 
-               </div>
-
-
-  <div className="flex gap-2 py-4">
-
-    <button onClick={()=>deleteProductHandler(product._id)} className="bg-red-200 text-red-600 px-8 py-3 rounded-lg font-[600] text-[20px]">Delete</button>
-
-    <button className="bg-green-200 text-green-600 px-8 py-3 rounded-lg font-[600] text-[20px]">Update</button>
-
-
-
-  </div>
-
-                </div>
-            ))
-        }
 
     </div>
 }

@@ -62,8 +62,7 @@ function CreateProduct({setSelectedItem , token}){
     
 
     useEffect(()=>{
-     
-
+    
         fetchAllCategory();
  },[])
 
