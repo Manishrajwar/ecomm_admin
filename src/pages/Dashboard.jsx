@@ -3,10 +3,12 @@ import CreateCategory from "../Component/CreateCategory";
 import AllProducts from "../Component/AllProducts";
 import CreateProduct from "../Component/CreateProduct";
 import AllUsers from "../Component/AllUsers";
+import ProductDashboard from "../Component/ProductDashboard";
 
 function Dashboard(){
 
     const [selectedItem , setSelectedItem ] = useState("createProduct");
+
 
  const [token , setToken] = useState("");
 
@@ -29,7 +31,7 @@ function Dashboard(){
    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
       <ul class="space-y-2 font-medium">
 
-         <li>
+         <li onClick={()=>setSelectedItem("dashboard")}>
             <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
                   <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
@@ -87,6 +89,10 @@ function Dashboard(){
 
 <div class="p-4 sm:ml-64  min-h-[100vh]">
    {
+    selectedItem === "dashboard" && 
+ <ProductDashboard  token={token} setSelectedItem={setSelectedItem} />
+   }
+   {
     selectedItem === "createProduct" && 
  <CreateProduct token={token} setSelectedItem={setSelectedItem} />
    }
@@ -103,7 +109,7 @@ function Dashboard(){
 
    {
       selectedItem === "users" && 
-      <AllUsers token={token} setSelectedItem={setSelectedItem} />
+      <AllUsers  token={token} setSelectedItem={setSelectedItem} />
    }
 </div>
 
