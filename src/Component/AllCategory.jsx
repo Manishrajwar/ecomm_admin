@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 function AllCategory({token , setSelectedItem ,setUpdateCategoryId ,updateCategoryId ,updateProductId ,setUpdateProductId}){
 
@@ -15,7 +16,6 @@ function AllCategory({token , setSelectedItem ,setUpdateCategoryId ,updateCatego
               },
             });
             const formattedResponse = await response.json();
-console.log("allCategory" ,formattedResponse);
             if(formattedResponse.success){
               setAllCategory(formattedResponse.data);
             }
@@ -39,6 +39,7 @@ console.log("allCategory" ,formattedResponse);
      },[])
 
      const deleteCategory = async(categoryId)=>{
+      const toastId = toast.loading("Loading...");
         try{
             const response = await fetch(`http://localhost:4000/api/v1//deleteCategory/${categoryId}` , {
                 method:"DELETE",
@@ -52,16 +53,17 @@ console.log("allCategory" ,formattedResponse);
 
 
               if(formattedResponse.success){
-               alert("successfully delete the category");
+               toast.success("successfully delete the category");
                fetchAllCategory();
               }
-  
-
-
+              else{
+                toast.error(formattedResponse?.message);
+              }
         } catch(error){
             console.log(error);
-            alert(error);
+            toast.error(error);
         }
+        toast.dismiss(toastId);
      }
 
     return (
