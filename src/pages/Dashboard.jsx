@@ -8,7 +8,7 @@ import AllCategory from "../Component/AllCategory";
 
 function Dashboard(){
 
-    const [selectedItem , setSelectedItem ] = useState("createProduct");
+    const [selectedItem , setSelectedItem ] = useState("dashboard");
 
     const [updateCategoryId , setUpdateCategoryId] = useState(null);
 
@@ -114,7 +114,7 @@ useEffect(()=>{
 <div class="p-4 sm:ml-64  min-h-[100vh]">
    {
     selectedItem === "dashboard" && 
- <ProductDashboard updateProductId={updateProductId} setUpdateProductId={setUpdateProductId} updateCategoryId={updateCategoryId} setUpdateCategoryId={setUpdateCategoryId} token={token} setSelectedItem={setSelectedItem} />
+ <ProductDashboard updateProductId={updateProductId} setUpdateProductId={setUpdateProductId} updateCategoryId={updateCategoryId} setUpdateCategoryId={setUpdateCategoryId} token={token} setToken={setToken} setSelectedItem={setSelectedItem} />
    }
    {
     selectedItem === "createProduct" && 

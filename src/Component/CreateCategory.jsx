@@ -1,4 +1,5 @@
 import {   useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 function CreateCategory({setSelectedItem , token , updateCategoryId , setUpdateCategoryId ,updateProductId ,setUpdateProductId}){
 
@@ -44,7 +45,9 @@ function CreateCategory({setSelectedItem , token , updateCategoryId , setUpdateC
      }
 
  // Handle Form Submission
- const submitHandler =async (e) =>{    
+ const submitHandler =async (e) =>{  
+  
+  const toastId = toast.loading("Loading...");
 
     try {
 
@@ -66,13 +69,18 @@ function CreateCategory({setSelectedItem , token , updateCategoryId , setUpdateC
   
       const formattedResponse = await response.json();
       if(formattedResponse.success){
-        alert("successfuly created the category");
-                 setSelectedItem("createProduct");
+        toast.success("successfuly created the category");
+                 setSelectedItem("category");
+      }
+      else{
+        toast.error(formattedResponse?.message)
       }
     } catch (error) {
       console.log(`error in fetch api `, error);
-      alert(error);
+      toast.error(error);
     }
+
+    toast.dismiss(toastId);
 
   }
 
@@ -103,6 +111,8 @@ function CreateCategory({setSelectedItem , token , updateCategoryId , setUpdateC
  }
 
  const updateHandler = async(e)=>{
+
+    const toastId = toast.loading("Loading...");
   try {
 
     const formToSendData = new FormData();
@@ -122,13 +132,18 @@ function CreateCategory({setSelectedItem , token , updateCategoryId , setUpdateC
     const formattedResponse = await response.json();
 
     if(formattedResponse.success){
-      alert("successfuly updated the category");
-      setSelectedItem("createProduct");
+      toast.success("successfuly updated the category");
+      setSelectedItem("category");
+    }
+    else{
+      toast.error(formattedResponse?.message);
     }
   } catch (error) {
     console.log(`error in fetch api `, error);
-    alert(error);
+    toast.error(error);
   }
+
+  toast.dismiss(toastId);
 
  }
 

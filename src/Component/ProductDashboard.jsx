@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
-function ProductDashboard({token , updateCategoryId , setUpdateCategoryId , updateProductId ,setUpdateProductId}){
+function ProductDashboard({ updateCategoryId , setUpdateCategoryId , updateProductId ,setUpdateProductId }){
 
     const [totalUsers , setTotalUsers] = useState("");
 
+     const token = localStorage.getItem("ecomm_token");
     
 
     const fetchAllUsers = async()=>{
+
         try{
             const response = await fetch(`http://localhost:4000/api/v1/getAllUsers` , {
               method:"GET",
@@ -20,7 +23,9 @@ function ProductDashboard({token , updateCategoryId , setUpdateCategoryId , upda
             if(formattedResponse.success){
               setTotalUsers(formattedResponse.data.length);
             }
-
+    else{
+      toast.error(formattedResponse?.message);
+    }
 
           }catch (error) {
             console.log(`error in fetch api `, error);

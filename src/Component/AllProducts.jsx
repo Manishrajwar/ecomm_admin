@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelectedItem ,updateProductId ,setUpdateProductId}){
 
@@ -18,11 +19,9 @@ function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelected
         const formattedResponse = await response.json();
        
         if(!formattedResponse.success){
-        alert(formattedResponse.message);
+        toast.error(formattedResponse.message);
   
-        } else{
-          console.log(formattedResponse);
-          
+        } else{          
           setAllProducts(formattedResponse?.allProducts);
         }
   
@@ -44,6 +43,8 @@ function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelected
 
 
           const deleteProductHandler =async (id) =>{
+
+            const toastId = toast.loading("Loading...");
             try{
                 const response = await fetch(`http://localhost:4000/api/v1/deleteProduct/${id}` , {
                   method:"DELETE",
@@ -54,13 +55,18 @@ function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelected
                 });
                 const formattedResponse = await response.json();
                 if(formattedResponse.success){
-                  alert("successfuly delete the product");
+                  toast.success("successfuly delete the product");
                 fetchAllProducts();
+                }
+                else{
+                  toast.error(formattedResponse?.message)
                 }
 
               }catch (error) {
                 console.log(`error in fetch api `, error);
               }  
+
+              toast.dismiss(toastId);
           }
 
     return (

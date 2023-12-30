@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast"
+
 
 function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCategoryId , updateProductId ,setUpdateProductId}){
 
@@ -119,6 +121,8 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
  // Handle Form Submission
  const submitHandler =async () =>{
 
+  const loadingId = toast.loading("Loading...");
+
     try {
 
       const formToSendData = new FormData();
@@ -140,23 +144,29 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
       });
   
       const formattedResponse = await response.json();
-      console.log("formatedre" , formattedResponse);
 
 
       if(formattedResponse.success){
-        alert("successfuly created the product");
+        toast.success("successfuly created the product");
                  setSelectedItem("products");
+      }
+      else{
+        toast.error(formattedResponse?.message);
       }
     } catch (error) {
       console.log(`error in fetch api `, error);
-      alert(error);
+      toast.error(error);
     }
+
+    toast.dismiss(loadingId);
 
   }
 
 
   const updateProductHandler = async()=>{
    
+
+    const toastId = toast.loading("Loading...");
     try {
 
       const formToSendData = new FormData();
@@ -178,18 +188,20 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
       });
   
       const formattedResponse = await response.json();
-      console.log("updateProductData" , formattedResponse);
 
 
       if(formattedResponse.success){
-        alert("successfuly updated the product");
+        toast.success("successfuly updated the product");
                  setSelectedItem("products");
       }
+      else{
+        toast.error(formattedResponse?.message);
+      }
     } catch (error) {
-      console.log(`error in fetch api `, error);
-      alert(error);
+      toast.error(error);
     }
   
+    toast.dismiss(toastId);
   }
 
     return (
