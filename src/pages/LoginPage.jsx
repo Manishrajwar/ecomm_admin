@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 function LoginPage(){
@@ -34,14 +35,12 @@ function LoginPage(){
       });
   
       const formattedResponse = await response.json();
-      console.log('forde' , formattedResponse);
      
       if(!formattedResponse.success){
       alert(formattedResponse.message);
 
       } else{
-        console.log(formattedResponse);
-        alert(formattedResponse.message);
+        toast.success(formattedResponse.message);
         localStorage.setItem("ecomm_token" , formattedResponse.token);
  navigate("/dashboard");
         

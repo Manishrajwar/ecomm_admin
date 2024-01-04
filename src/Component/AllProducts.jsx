@@ -3,13 +3,39 @@ import toast from "react-hot-toast";
 
 function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelectedItem ,updateProductId ,setUpdateProductId}){
 
-    const [allProducts , setAllProducts] = useState([]); 
+
+  const [formData , setFormData] = useState({
+    category:"",
+    subCategory:""
+    
+  })
 
 
-    const fetchAllProducts = async (e) => {
+   const [allCat, setAllCat] = useState([]);
+
+   const [allSubCat , setAllSubCat] = useState([]);
+
+   const [allProduct , setAllProduct] = useState([]);
+
+   const handleSelectChange = (event) => {
+    // Update the category field in the formData state
+    setFormData({
+      ...formData,
+      category: event.target.value
+    });
+  };
+
+   const handleSubSelectChange = (event) => {
+    // Update the category field in the formData state
+    setFormData({
+      ...formData,
+      subCategory: event.target.value
+    });
+  };
+   
+    const fetchAllCategory = async (e) => {
          
-  
-        const response = await fetch("http://localhost:4000/api/v1/fetchAllProducts", {
+        const response = await fetch("http://localhost:4000/api/v1/showAllCategory", {
           method: "GET",
           headers: {
             "content-type": "application/json",
@@ -17,19 +43,24 @@ function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelected
         });
     
         const formattedResponse = await response.json();
+
+        if(formattedResponse.success){
+          setAllCat(formattedResponse?.data);
+        }
+
+        // console.log(formattedResponse);
        
         if(!formattedResponse.success){
         toast.error(formattedResponse.message);
   
         } else{          
-          setAllProducts(formattedResponse?.allProducts);
         }
   
          };
   
          useEffect(()=>{
 
-        fetchAllProducts();
+          fetchAllCategory();
         if(updateCategoryId !== null){
           sessionStorage.removeItem("ecommAdmin_CategoryId");
           setUpdateCategoryId(null);
@@ -41,33 +72,50 @@ function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelected
         }
          },[])
 
+         useEffect(()=>{
 
-          const deleteProductHandler =async (id) =>{
+          const foundObj = allCat.find(obj => obj._id === formData.category);
 
-            const toastId = toast.loading("Loading...");
-            try{
-                const response = await fetch(`http://localhost:4000/api/v1/deleteProduct/${id}` , {
-                  method:"DELETE",
-                  headers: {
-                    "content-type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                  },
-                });
-                const formattedResponse = await response.json();
-                if(formattedResponse.success){
-                  toast.success("successfuly delete the product");
-                fetchAllProducts();
-                }
-                else{
-                  toast.error(formattedResponse?.message)
-                }
+          setAllSubCat(foundObj?.subCategory);
+                         },[formData.category])
 
-              }catch (error) {
-                console.log(`error in fetch api `, error);
-              }  
 
-              toast.dismiss(toastId);
-          }
+         useEffect(()=>{
+
+          const foundCatObj= allCat.find(obj => obj._id === formData.category);     
+          const foundSubCatObj = foundCatObj?.subCategory.find(obj => obj._id === formData.subCategory);
+
+          setAllProduct(foundSubCatObj?.products);
+        
+        },[formData.subCategory , formData.category])
+      
+        const deleteProductHandler =async (id) =>{
+
+          const toastId = toast.loading("Loading...");
+          try{
+              const response = await fetch(`http://localhost:4000/api/v1/deleteProduct/${id}` , {
+                method:"DELETE",
+                headers: {
+                  "content-type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              });
+              const formattedResponse = await response.json();
+              if(formattedResponse.success){
+                toast.success("successfuly delete the product");
+              // fetchAllProducts();
+              }
+              else{
+                toast.error(formattedResponse?.message)
+              }
+        
+            }catch (error) {
+              console.log(`error in fetch api `, error);
+            }  
+        
+            toast.dismiss(toastId);
+        }
+        
 
     return (
         <div className="w-full flex flex-col gap-10">
@@ -75,12 +123,42 @@ function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelected
         <h2 className="mx-auto text-white text-[34px] font-[600]">My Products</h2>
 
 
-{
-    allProducts.length > 0 && 
+            {/* category */}
+         <div>
+         <label htmlFor="category" className="text-white font-[600] ">Choose a category:</label>
+         
+          <select name="category" onChange={handleSelectChange}   id="category" className="w-[90%] bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" >
+                <option value="" selected disabled>Select Category</option>
+               {
+                allCat?.length > 0 && 
+                allCat?.map((cat)=>(
+                  <option value={cat?._id} key={cat._id}>{cat?.title}</option>
+                ))
+               }
+              </select>
+        
+              </div>
+
+         {/* sub category */}
+         <div className="my-5">
+         <label htmlFor="category" className="text-white font-[600] ">Choose a Sub Category:</label>
+         
+          <select  name="subCategory" onChange={handleSubSelectChange} id="category" className="w-[90%] bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" >
+                <option value="" selected disabled>Select Sub Category</option>
+                {
+                  allSubCat?.length > 0 && 
+                  allSubCat.map((subcat)=>(
+                    <option value={subcat?._id} key={subcat._id}>{subcat?.title}</option>
+                  ))
+                }
+               
+              </select>
+        
+              </div>
+ 
+ {
+    allProduct?.length > 0 ?
     <div className="flex gap-5 flex-wrap justify-center">
-
-
-       
 
 <div class="relative overflow-x-auto">
 
@@ -94,9 +172,7 @@ function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelected
                 <th scope="col" class="px-6 py-3">
                     Product Description
                 </th>
-                <th scope="col" class="px-6 py-3">
-                    Category
-                </th>
+              
                 <th scope="col" class="px-6 py-3">
                     Price
                 </th>
@@ -112,11 +188,10 @@ function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelected
             </tr>
         </thead>
 
-
-
         <tbody>
         {
-  allProducts.map((product , index)=>(
+
+  allProduct.map((product , index)=>(
     <tr key={index} class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
        {product?.title}
@@ -124,9 +199,7 @@ function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelected
     <td class="px-6 py-4">
         {product?.description}
     </td>
-    <td class="px-6 py-4">
-        {product?.category?.title}
-    </td>
+   
     <td class="px-6 py-4">
         {product?.price}
     </td>
@@ -146,18 +219,23 @@ function AllProducts({ token ,setUpdateCategoryId ,updateCategoryId ,setSelected
 
   ))
  }
-           
+   
         </tbody>
-
     </table>
 </div>
+    </div> :(
+      <span className="text-white font-[600] mx-auto text-[32px]">No product found </span>
+    )
+} 
 
 
     </div>
-}
-                  
-              </div>
     )
 }
 
 export default  AllProducts;
+
+
+
+
+

@@ -20,8 +20,6 @@ function PaymentHistory({token}){
   
       const formattedResponse = await response.json();
 
-      console.log("for" ,formattedResponse);
-
       if(formattedResponse.success){
         setAllPayment(formattedResponse?.allPayments);
       }
@@ -72,7 +70,7 @@ function PaymentHistory({token}){
                 allPayment.map((payment)=>(
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {payment?.user.firstName} {payment?.user?.lastName}
+                        {payment?.user?.firstName} {payment?.user?.lastName}
                     </th>
                     <td class="px-6 py-4">
                     {payment?.razorpay_order_id}
@@ -92,12 +90,10 @@ function PaymentHistory({token}){
           
         </tbody>
     </table>
-</div>
 
-  
-   
+</div>
                 ):(
-                <span>no payment left </span>
+                <span className="text-white font-[600] mx-auto text-[3rem]">no payment left </span>
             )
         }
                   

@@ -94,9 +94,6 @@ function CreateCategory({setSelectedItem , token , updateCategoryId , setUpdateC
       },
     });
     const formattedResponse = await response.json();
-
-    console.log("FETCHcATEGORTT" , formattedResponse);
-
     if(formattedResponse.success){
       setFormData((prev) => ({
         ...prev, 
