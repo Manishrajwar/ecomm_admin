@@ -5,13 +5,16 @@ import { toast } from "react-hot-toast"
 function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCategoryId , updateProductId ,setUpdateProductId}){
 
  const [allCategory , setAllCategory]  = useState([]);
+
+ const [chooseSubCat , setChooseSubCat] = useState([]);
     
     const [formData , setFormData]  = useState({
         title:"",
         thumbnail:"" , 
         description:"",
         price:"",
-        category:""
+        category:"" , 
+        subCategory:""
 
     })
 
@@ -45,11 +48,12 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
         const formattedResponse = await response.json();
        
         if(!formattedResponse.success){
-        alert(formattedResponse.message);
+        toast.error(formattedResponse.message);
   
         } else{
          
-        setAllCategory(formattedResponse?.data);          
+        setAllCategory(formattedResponse?.data);
+        setChooseSubCat(formattedResponse?.data[0]?.subCategory);          
         }
      }
     
@@ -61,7 +65,13 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
         });
       };
 
-    
+     const handleSubSelectChange = (event) => {
+        // Update the category field in the formData state
+        setFormData({
+          ...formData,
+          subCategory: event.target.value
+        });
+      };
 
     useEffect(()=>{
     
@@ -89,9 +99,7 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
         },
       });
       const formattedResponse = await response.json();
-  
-      console.log("productFetch" , formattedResponse);
-  
+    
       if(formattedResponse.success){
         setFormData((prev) => ({
           ...prev, 
@@ -113,10 +121,17 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
  }
 
  useEffect(()=>{
+       const foundObj = allCategory.find(obj => obj._id === formData.category);
+       setChooseSubCat(foundObj?.subCategory);
+ },[formData.category])
+
+
+ useEffect(()=>{
   if(updateProductId){
    fetchProductDetailById();
   }
  },[updateProductId])
+
 
  // Handle Form Submission
  const submitHandler =async () =>{
@@ -130,7 +145,7 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
       formToSendData.append("title" , formData.title);
       formToSendData.append("price" , formData.price);
       formToSendData.append("description" , formData.description);
-      formToSendData.append("category" , formData.category);
+      formToSendData.append("subCategoryId" , formData.subCategory);
 
 
       const response = await fetch( "http://localhost:4000/api/v1/createProduct", {
@@ -145,10 +160,8 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
   
       const formattedResponse = await response.json();
 
-
       if(formattedResponse.success){
         toast.success("successfuly created the product");
-                 setSelectedItem("products");
       }
       else{
         toast.error(formattedResponse?.message);
@@ -161,7 +174,6 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
     toast.dismiss(loadingId);
 
   }
-
 
   const updateProductHandler = async()=>{
    
@@ -231,14 +243,32 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
             <input onChange={changeHandler} type="number" id="price" name="price" value={formData.price} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@flowbite.com" required />
           </div>
          
+         {/* category */}
          <div>
          <label htmlFor="category" className="text-white font-[600] ">Choose a category:</label>
          
-          <select  onChange={handleSelectChange} value={formData.category} id="category" className="w-full bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" >
+          <select  onChange={handleSelectChange}  id="category" className="w-full bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" >
                 <option value="" selected disabled>Select Category</option>
                 {
-                    allCategory.length > 0 && 
-                    allCategory.map((item ,index)=>(
+                    allCategory?.length > 0 && 
+                    allCategory.map((item)=>(
+                        <option key={item._id}  value={item._id}>{item.title}</option>
+                        
+                    ))
+                }
+              </select>
+        
+              </div>
+
+         {/* sub category */}
+         <div className="my-5">
+         <label htmlFor="category" className="text-white font-[600] ">Choose a Sub Category:</label>
+         
+          <select  onChange={handleSubSelectChange} value={formData.subCategory} name="subCategory" id="category" className="w-full bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" >
+                <option value="" selected disabled>Select Sub Category</option>
+                {
+                    chooseSubCat?.length > 0 && 
+                    chooseSubCat.map((item)=>(
                         <option key={item._id}  value={item._id}>{item.title}</option>
                         
                     ))
@@ -262,6 +292,7 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
         </div>
         
           <button type="submit" class="text-white mt-3 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">{updateProductId !== null ?"Update":"Submit"}</button>
+
         </form>
         
             </div>
