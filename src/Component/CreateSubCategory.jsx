@@ -1,7 +1,7 @@
 import {   useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-function CreateSubCategory({setSelectedItem ,updateSubCategoryId , token }){
+function CreateSubCategory({setSelectedItem ,updateSubCategoryId , token ,setUpdateCategoryId ,setUpdateProductId ,updateProductId ,updateCategoryId ,setUpdateSubCategoryId }){
 
   
      const [formData , setFormData] = useState({
@@ -72,6 +72,7 @@ setFormData({
           const formattedResponse = await response.json();
           if(formattedResponse.success){
           toast.success("Successfuly created");
+          setSelectedItem("category");
           }
           else{
             toast.error(formattedResponse?.message)
@@ -105,6 +106,14 @@ setFormData({
         });
     
         const formattedResponse = await response.json();
+
+        if(formattedResponse.success){
+          toast.success("Sucessfuly updated");
+          setSelectedItem("category")
+        }
+        else{
+          toast.error(formattedResponse?.message)
+        }
     
   
       } catch (error) {
@@ -118,7 +127,54 @@ setFormData({
 
      useEffect(()=>{
         fetchAllCategory();
+
+       
+          if(sessionStorage.getItem("ecommAdmin_subCategoryId")){
+             setUpdateSubCategoryId(sessionStorage.getItem("ecommAdmin_subCategoryId"));
+           }
+           
+           if(updateProductId !== null){
+             sessionStorage.removeItem("ecommAdmin_productId");
+             setUpdateProductId(null);
+           }
+          
+           if(updateCategoryId !== null){
+             sessionStorage.removeItem("ecommAdmin_CategoryId");
+             setUpdateCategoryId(null);
+           }
+        
      },[])
+
+     const fetchSubCategoryDetailById = async()=>{
+      try{
+        const response = await fetch(`http://localhost:4000/api/v1/subCategoryPageDetails/${updateSubCategoryId}` , {
+          method:"GET",
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const formattedResponse = await response.json();
+
+      
+        if(formattedResponse.success){
+          setFormData((prev) => ({
+            ...prev, 
+            title: formattedResponse?.selectedSubCategory?.title, 
+            thumbnail: formattedResponse?.selectedSubCategory?.images
+          }));
+        }
+       
+      }catch (error) {
+        console.log(`error in fetch api `, error);
+      }  
+     }
+
+     useEffect(()=>{
+      if(updateSubCategoryId){
+       fetchSubCategoryDetailById();
+      }
+     },[updateSubCategoryId])
 
     return (
         <div className="w-full flex flex-col gap-10  ">

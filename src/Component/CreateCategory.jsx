@@ -1,7 +1,7 @@
 import {   useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-function CreateCategory({setSelectedItem , token , updateCategoryId , setUpdateCategoryId ,updateProductId ,setUpdateProductId}){
+function CreateCategory({setSelectedItem , token , updateCategoryId , setUpdateCategoryId ,updateProductId ,setUpdateSubCategoryId,setUpdateProductId ,updateSubCategoryId}){
 
   
     const [formData , setFormData]  = useState({
@@ -19,6 +19,11 @@ function CreateCategory({setSelectedItem , token , updateCategoryId , setUpdateC
         sessionStorage.removeItem("ecommAdmin_productId");
         setUpdateProductId(null);
       }
+      if(updateSubCategoryId !== null){
+        sessionStorage.removeItem("ecommAdmin_subCategoryId");
+        setUpdateSubCategoryId(null);
+      }
+      
       
   },[]);
 
@@ -34,8 +39,6 @@ function CreateCategory({setSelectedItem , token , updateCategoryId , setUpdateC
 
     
   };
-
-
 
     const changeHandler =  (e)=>{
         setFormData((prevData) => ({
@@ -94,11 +97,11 @@ function CreateCategory({setSelectedItem , token , updateCategoryId , setUpdateC
       },
     });
     const formattedResponse = await response.json();
+  
     if(formattedResponse.success){
       setFormData((prev) => ({
         ...prev, 
-        title: formattedResponse?.data?.selectedCategory?.title, 
-        thumbnail: formattedResponse?.data?.selectedCategory?.images,
+        title: formattedResponse?.categoryDetails?.title, 
       }));
     }
    
@@ -174,7 +177,6 @@ useEffect(()=>{
         <input
                 type="file"
                 accept="image/*" 
-
                 onChange={handleImageChange}
                 style={{ marginBottom: '10px' }}
                 className="w-full bg-gray-50 border mt-2 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
