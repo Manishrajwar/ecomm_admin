@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast"
 
 
-function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCategoryId , updateProductId ,setUpdateProductId}){
+function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateSubCategoryId,setUpdateSubCategoryId,updateCategoryId , updateProductId ,setUpdateProductId}){
 
  const [allCategory , setAllCategory]  = useState([]);
 
@@ -85,6 +85,10 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
           sessionStorage.removeItem("ecommAdmin_CategoryId");
           setUpdateCategoryId(null);
         }
+        if(updateSubCategoryId !== null){
+          sessionStorage.removeItem("ecommAdmin_subCategoryId");
+          setUpdateSubCategoryId(null);
+        }
 
  },[])
 
@@ -162,6 +166,7 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
 
       if(formattedResponse.success){
         toast.success("successfuly created the product");
+        setSelectedItem("products")
       }
       else{
         toast.error(formattedResponse?.message);
@@ -186,7 +191,7 @@ function CreateProduct({setSelectedItem , token ,setUpdateCategoryId ,updateCate
       formToSendData.append("title" , formData.title);
       formToSendData.append("price" , formData.price);
       formToSendData.append("description" , formData.description);
-      formToSendData.append("category" , formData.category);
+      formToSendData.append("subCategoryId" , formData.subCategory);
 
 
       const response = await fetch( `http://localhost:4000/api/v1/updateProduct/${updateProductId}`, {

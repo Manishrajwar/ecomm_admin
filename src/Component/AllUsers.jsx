@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function AllUsers({ token ,setUpdateCategoryId ,updateCategoryId ,updateProductId ,setUpdateProductId}){
+function AllUsers({ token ,setUpdateCategoryId ,updateCategoryId ,updateProductId ,setUpdateProductId ,updateSubCategoryId ,setUpdateSubCategoryId}){
 
     const [users , setUsers] = useState([]);
 
@@ -34,6 +34,11 @@ function AllUsers({ token ,setUpdateCategoryId ,updateCategoryId ,updateProductI
      if(updateProductId !== null){
       sessionStorage.removeItem("ecommAdmin_productId");
       setUpdateProductId(null);
+    }
+    
+    if(updateSubCategoryId !== null){
+      sessionStorage.removeItem("ecommAdmin_subCategoryId");
+      setUpdateSubCategoryId(null);
     }
     },[])
 
