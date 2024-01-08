@@ -52,9 +52,9 @@ function PaymentHistory({token}){
                 <th scope="col" class="px-6 py-3">
                     userName
                 </th>
-                <th scope="col" class="px-6 py-3">
+                {/* <th scope="col" class="px-6 py-3">
                     razorpaySignature
-                </th>
+                </th> */}
                 <th scope="col" class="px-6 py-3">
                 razorpay_payment_id
 
@@ -69,20 +69,24 @@ function PaymentHistory({token}){
             {
                 allPayment.map((payment)=>(
                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         {payment?.user?.firstName} {payment?.user?.lastName}
-                    </th>
-                    <td class="px-6 py-4">
-                    {payment?.razorpay_order_id}
-
                     </td>
+
+                    {/* <td class="px-6 py-4">
+                   {payment?.razorpay_signature}
+                    </td> */}
+
                     <td class="px-6 py-4">
                     {payment?.razorpay_payment_id}
 
                     </td>
+
                     <td class="px-6 py-4">
-                   {payment?.razorpay_signature}
+                    {payment?.razorpay_order_id}
+
                     </td>
+                    
                 </tr>
            
                 ))
