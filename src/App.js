@@ -1,15 +1,15 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import LoginPage from './pages/LoginPage';
 import Dashboard from './pages/Dashboard';
+import TermCondition from './pages/TermCondition';
 
 
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path='/' element={<LoginPage />} />
-<Route path='/dashboard' element={<Dashboard />} />
+<Route path='/' element={<Dashboard />} />
+<Route path='/termAndCondition' element={<TermCondition />} />
        
       </Routes>
      
